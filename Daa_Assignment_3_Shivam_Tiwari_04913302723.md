@@ -1,9 +1,8 @@
-
 # GGSIPU – UNIT III ASSIGNMENT
 ---
 Name: Shivam Tiwari
 ---
-Enrollment number: 04913302723
+Enrollment Number: 04913302723
 ---
 
 ## SECTION A – Short Theory [15 Marks]
@@ -12,172 +11,216 @@ Enrollment number: 04913302723
 
 **Answer:**
 
-1. **Optimal substructure:** Global optimum can be formed from subproblem optima → enables a recurrence.
-2. **Overlapping subproblems:** Same subproblems recur → motivates caching.
-3. **Memo/table:** Store subproblem answers → eliminates recomputation → time ↓ from exponential to polynomial.
+| Ingredient                     | One-line purpose                                                                              |
+| ------------------------------ | --------------------------------------------------------------------------------------------- |
+| **Optimal substructure**       | Global optimum can be composed from subproblem optima → enables a recurrence.                 |
+| **Overlapping subproblems**    | The same subproblems occur repeatedly → motivates caching.                                    |
+| **Memo/table (state storage)** | Store subproblem results to avoid recomputation → reduce time from exponential to polynomial. |
 
 ---
 
-### Q2) DP vs D&C — Two differences (overlap & reuse) + one example each. [2][1]
+### Q2) DP vs Divide & Conquer — Two differences (overlap & reuse) + one example each. [2][1]
 
 **Answer:**
 
-* **Overlap:** DP has overlapping subproblems; D&C has largely disjoint subproblems.
-* **Reuse:** DP **reuses** cached results (memo/table); D&C **does not reuse** (solves new subproblems).
-* **Examples:** DP → LCS, Fibonacci; D&C → MergeSort, QuickSort.
+| Aspect               | Dynamic Programming                  | Divide & Conquer                |
+| -------------------- | ------------------------------------ | ------------------------------- |
+| **Subproblems**      | Overlapping                          | Mostly disjoint                 |
+| **Reuse**            | Reuses cached solutions (memo/table) | No reuse; solve independently   |
+| **Typical examples** | Fibonacci, LCS, Bellman–Ford         | MergeSort, QuickSort, Karatsuba |
 
 ---
 
-### Q3) Principle of optimality — Define + name a problem. [3][4]
+### Q3) Principle of Optimality — Define + name a problem. [3][4]
 
-**Answer:**
-**Definition:** Any optimal solution contains optimal solutions to all subproblems induced by the chosen decision.
-**Examples:** Matrix Chain Multiplication, All-Pairs Shortest Paths (Floyd–Warshall), Bellman–Ford, 0/1 Knapsack (DP state view).
+**Answer (one sentence):** An optimal solution contains optimal solutions to the subproblems induced by the chosen decision.
+
+**Examples:** Matrix Chain Multiplication (MCM), All-Pairs Shortest Paths (Floyd–Warshall), Bellman–Ford.
 
 ---
 
-### Q4) Memoization — Define & contrast with tabulation in one line each. [1]
+### Q4) Memoization vs Tabulation — Define each in one line. [1]
 
 **Answer:**
 
-* **Memoization (top-down):** Recursive calls compute **on demand**; cache results.
-* **Tabulation (bottom-up):** Iteratively fill table in dependency order; no recursion.
+| Technique                  | One-line definition                                                    |
+| -------------------------- | ---------------------------------------------------------------------- |
+| **Memoization (Top–Down)** | Recursive, compute-on-demand, cache results of calls; uses call stack. |
+| **Tabulation (Bottom–Up)** | Iterative filling of DP table in dependency order; no recursion.       |
 
 ---
 
 ### Q5) Branch & Bound idea — Define BnB + role of bounding/pruning (two lines). [5][6]
 
-**Answer:**
-BnB explores a **state tree**, branching on choices and tracking the **best feasible** value so far.
-A **bound** (optimistic upper bound) is computed per node; if **bound ≤ best**, prune that node (no better solution possible).
+**Answer:** Branch & Bound explores a state tree, branching on decisions while tracking the best feasible value. A **bound** gives an optimistic upper bound; if **bound ≤ current best**, the node is **pruned** (cannot beat incumbent).
 
 ---
 
 ## SECTION B – Algorithms & Recurrences [15 Marks]
 
-### Q6) Matrix Chain Multiplication (A₁:5×4, A₂:4×6, A₃:6×2, A₄:2×7)
+### Q6) Matrix Chain Multiplication (A₁: 5×4, A₂: 4×6, A₃: 6×2, A₄: 2×7)
 
-**(a) Write m[i,j] recurrence and base (no derivation). [4][7][8]**
-Let dimensions (d=[5,4,6,2,7]).
+**(a) Write (m[i,j]) recurrence and base (no derivation). [4][7][8]**
+
+Let dimensions be (d=[5,4,6,2,7]) so that (A_1=d_0\times d_1=5\times4), …, (A_4=d_3\times d_4=2\times7).
+
 **Base:** (m[i,i]=0).
+
 **Recurrence:**
 [
-m[i,j]=\min_{i\le k<j}\left{, m[i,k]+m[k+1,j]+d_{i-1},d_k,d_j \right}.
+\boxed{; m[i,j] = \min_{i\le k<j} \big( m[i,k] + m[k+1,j] + d_{i-1},d_k,d_j \big);,\quad 1\le i<j\le n;}
 ]
 
 **(b) Minimum scalar multiplications (number only). [8][4]**
-**Answer: 158**
+**Answer:** **158**
 
-**Detailed work (DP table):**
+**Worked DP table (costs):**
 
-* (d=[5,4,6,2,7]) (so (A_1=5!\times!4,\ A_2=4!\times!6,\ A_3=6!\times!2,\ A_4=2!\times!7))
+| Interval |               Split k |        Cost |
+| -------- | --------------------: | ----------: |
+| (m[1,2]) |                     – | (5·4·6=120) |
+| (m[2,3]) |                     – |  (4·6·2=48) |
+| (m[3,4]) |                     – |  (6·2·7=84) |
+| (m[1,3]) |   (k=1): (0+48+5·4·2) |      **88** |
+|          |  (k=2): (120+0+5·6·2) |         180 |
+| (m[2,4]) |   (k=2): (0+84+4·6·7) |         252 |
+|          |   (k=3): (48+0+4·2·7) |     **104** |
+| (m[1,4]) |  (k=1): (0+104+5·4·7) |         244 |
+|          | (k=2): (120+84+5·6·7) |         414 |
+|          |   (k=3): (88+0+5·2·7) |     **158** |
 
-**Cost table (m[i,j]):**
-
-* Length 2:
-
-  * (m[1,2]=5\cdot4\cdot6=120)
-  * (m[2,3]=4\cdot6\cdot2=48)
-  * (m[3,4]=6\cdot2\cdot7=84)
-* Length 3:
-
-  * (m[1,3]=\min{(1|2,3):120+48+5\cdot4\cdot2=208,\ (1,2|3):120+0+5\cdot6\cdot2=180}=88) ← (recompute carefully)
-    **Correct calc:**
-
-    * (k=1:\  m[1,1]+m[2,3]+5\cdot4\cdot2=0+48+40=88)
-    * (k=2:\  m[1,2]+m[3,3]+5\cdot6\cdot2=120+0+60=180) → pick **88**
-  * (m[2,4]=\min{k=2:\ 0+84+4\cdot6\cdot7=252,\ k=3:\ 48+0+4\cdot2\cdot7=104}=\mathbf{104})
-* Length 4:
-
-  * (m[1,4]=\min{k=1:0+104+5\cdot4\cdot7=244,\ k=2:120+84+5\cdot6\cdot7=414,\ k=3:88+0+5\cdot2\cdot7=\mathbf{158}})
-
-**Split table (s[i,j]) (argmin k):** (s[1,3]=1,\ s[2,4]=3,\ s[1,4]=3).
-**Optimal order:** split at (k=3): ((A_1..A_3),A_4); then split (A_1..A_3) at (k=1): (A_1,(A_2A_3)).
-So **((A_1,(A_2A_3)),A_4)** with cost **158**. *(Note: not (((A_1A_2)(A_3A_4)))).*
+**Optimal order (via split table):** ((A_1,(A_2A_3)),A_4)).
 
 ---
 
-### Q7) Longest Common Subsequence (X="ABCDGH", Y="AEDFHR")
+### Q7) Longest Common Subsequence (X = "ABCDGH", Y = "AEDFHR")
 
-**(a) LCS(i,j) recurrence and base. [1]**
-**Base:** (LCS(0,,j)=LCS(i,,0)=0).
+**(a) Write the LCS(i,j) recurrence and base. [1]**
+
+**Base:** (L(0,j)=L(i,0)=0).
+
 **Recurrence:**
 [
-L(i,j)=
-\begin{cases}
-1+L(i-1,j-1), & X_i=Y_j\
-\max{L(i-1,j),,L(i,j-1)}, & X_i\ne Y_j
-\end{cases}
+\boxed{;L(i,j)=\begin{cases}
+1+L(i-1,j-1), & X_i=Y_j,\
+\max{L(i-1,j),,L(i,j-1)}, & X_i\ne Y_j~.
+\end{cases};}
 ]
 
 **(b) LCS length (number only). [1]**
-**Answer: 3**
+**Answer:** **3**
 
-**Brief table idea:** matches at ((A,A), (D,D), (H,H)) ⇒ one LCS = **“ADH”**; table ends with (L(6,6)=3).
+**Short justification table (matches):**
+
+| Match positions | Character |
+| --------------- | --------- |
+| ((1,1))         | A         |
+| ((4,4))         | D         |
+| ((6,6))         | H         |
+
+One LCS is **“ADH”** ⇒ length **3**.
 
 ---
 
-### Q8) Optimal Binary Search Tree (keys: 10,20,30; p: 0.4,0.3,0.3; assume q=0)
+### Q8) Optimal Binary Search Tree (keys: 10,20,30; (p=[0.4,0.3,0.3]); assume (q=0))
 
-**(a) Write (w[i,j]) and (e[i,j]) DP formulations with base. [1]**
-**Base:** (e[i,i-1]=0,\ w[i,i-1]=0).
-**Weight:** (w[i,j]=w[i,j-1]+p_j) (sum of (p_i..p_j)).
-**Cost:**
+**(a) Write (w[i,j]) and (e[i,j]) formulations with base. [1]**
+
+**Base:** (e[i,i-1]=0,; w[i,i-1]=0).
+
+**Weights (prefix accumulation):**
+(w[i,j]=w[i,j-1]+p_j) ((=\sum_{k=i}^j p_k)).
+
+**Cost DP:**
 [
-e[i,j]=\min_{r=i}^j \big( e[i,r-1] + e[r+1,j] + w[i,j] \big).
+\boxed{; e[i,j]=\min_{,r=i..j}\big( e[i,r-1]+e[r+1,j]+w[i,j] \big);}
 ]
 
 **(b) Minimum expected search cost (number only). [1]**
-**Answer: 1.7**
+**Answer:** **1.7** (best root = 20)
 
-**Brief working:** Try roots:
+**Worked tables:**
 
-* Root 20 (depths: 20@1, 10@2, 30@2): (0.3\cdot1+0.4\cdot2+0.3\cdot2=\mathbf{1.7}) (best)
-* Root 10 → 1.9; Root 30 → 2.0/2.1.
+* **Weights (w[i,j]):**
+
+| i→ j↓ |   1 |   2 |   3 |
+| ----: | --: | --: | --: |
+| **1** | 0.4 | 0.7 | 1.0 |
+| **2** |   – | 0.3 | 0.6 |
+| **3** |   – |   – | 0.3 |
+
+* **Single-key costs:** (e[1,1]=0.4), (e[2,2]=0.3), (e[3,3]=0.3)
+
+* **Two-key intervals:**
+
+  * (e[1,2]=\min{0+0.3+0.7,\ 0.4+0+0.7}=\min{1.0,1.1}=\mathbf{1.0}) (root 10)
+  * (e[2,3]=\min{0+0.3+0.6,\ 0.3+0+0.6}=\mathbf{0.9}) (either root)
+
+* **Three-key interval:**
+
+  * (e[1,3]=\min{\underbrace{0+0.9+1.0}*{r=10}=1.9,\ \underbrace{0.4+0.3+1.0}*{r=20}=\mathbf{1.7},\ \underbrace{1.0+0+1.0}_{r=30}=2.0}\Rightarrow \mathbf{1.7}) (root 20)
 
 ---
 
-### Q9) 0/1 Knapsack – Branch & Bound (W=5; w={2,3,4,5}, p={3,4,5,6})
+### Q9) 0/1 Knapsack – Branch & Bound ((W=5); (w={2,3,4,5}), (p={3,4,5,6}))
 
 **(a) Fractional upper bound formula used for pruning. [6][9][5]**
-Items sorted by density (p_k/w_k). For a node at level (i) with current ((v,w)) and capacity (W):
+
+Sort items by density (p_k/w_k) in non-increasing order. For a node at level (i) with current profit (v), weight (w), remaining capacity (C=W-w):
 [
-\text{ub}=v+\sum_{\text{fit }k\ge i} p_k\ +\ \frac{W-w-\sum_{\text{fit}} w_k}{w_t}\cdot p_t,
+\boxed{;\text{ub} = v + \sum_{\text{fit }k\ge i} p_k ; + ; \frac{C-\sum_{\text{fit}} w_k}{w_t}, p_t;}
 ]
-where (t) is the first item that **doesn’t** fully fit (omit last term if none).
+where (t) is the first item that **doesn’t** fully fit (omit the fractional term if all fit).
 
-**(b) Level-0 & Level-1 nodes (include/exclude first item) with (v,w,ub) only. [5][6]**
-Densities: (1.5,,1.\overline{3},,1.25,,1.2).
+**Densities:** (\tfrac{3}{2}=1.5,\ \tfrac{4}{3}\approx1.33,\ \tfrac{5}{4}=1.25,\ \tfrac{6}{5}=1.2).
 
-* **Level-0 (root):** ((0,0,\ \text{ub}=3+4= \mathbf{7})).
-* **Level-1 include item1 (2,3):** ((3,2,\ \text{ub}=3+4=\mathbf{7})) (left capacity 3 fits item2 fully).
-* **Level-1 exclude item1:** capacity 5; take item2 (4,3) + **fraction** of item3: (5-3=2\Rightarrow 2/4) of profit 5 → 2.5;
-  ((0,0,\ \text{ub}=4+2.5=\mathbf{6.5})).
+**(b) Level-0 & Level-1 nodes (include/exclude first item) with (v, w, ub). [5][6]**
 
-*(These ubs guide pruning; actual feasibility still checked by weight.)*
+| Level | Decision                | (v, w) | ub computation                                                    |  **ub** |
+| ----: | ----------------------- | -----: | ----------------------------------------------------------------- | ------: |
+|     0 | Root                    | (0, 0) | Take items 1 & 2 fully (3+4), capacity filled                     | **7.0** |
+|     1 | Include item1 (w=2,p=3) | (3, 2) | Remaining C=3 → take item2 fully (+4)                             | **7.0** |
+|     1 | Exclude item1           | (0, 0) | Take item2 (4,3) + fraction of item3: extra C=2 → (2/4\cdot5=2.5) | **6.5** |
+
+These bounds guide pruning: any node with (\text{ub} \le) incumbent best profit can be discarded.
 
 ---
 
 ### Q10) TSP – Dynamic Programming (Held–Karp; 4 cities, example D given)
 
-**(a) (C[S,j]) recurrence and final answer. [1]**
-Start at city (1).
-**Base:** (C[{j},j]=d(1,j)) for (j\neq1).
+**(a) Recurrence (C[S,j]) and final expression. [1]**
+
+Assume start city is 1. Let (S\subseteq{2,3,4}), (j\in S).
+
+**Base:** (\boxed{\ C[{j},j]=d(1,j)\ }) for all (j\neq1).
+
 **Recurrence:**
 [
-C[S,j]=\min_{k\in S\setminus{j}}\ \big( C[S\setminus{j},k] + d(k,j) \big),\quad j\in S,\ 1\notin S.
+\boxed{; C[S,j] = \min_{k\in S\setminus{j}} \big( C[S\setminus{j},k] + d(k,j) \big) ;}
 ]
-**Final:**
+
+**Final answer:**
 [
-\min_{j\in{2,3,4}}\ \big( C[{2,3,4},j] + d(j,1) \big).
+\boxed{; \min_{j\in{2,3,4}} \big( C[{2,3,4},j] + d(j,1) \big) ;}
 ]
 
-**(b) Initialize base entries (C[{k},k]) for (k=2..4) (numbers only for the given (D)). [1]**
+**(b) Initialize base entries (C[{k},k]) for (k=2..4) (numbers only for a given (D)). [1]**
 
-* **Generic:** (C[{2},2]=d(1,2),\ C[{3},3]=d(1,3),\ C[{4},4]=d(1,4)).
-* **Illustration (if (D=\begin{bmatrix}0&10&15&20\10&0&35&25\15&35&0&30\20&25&30&0\end{bmatrix})):**
-  (C[{2},2]=10,\ C[{3},3]=15,\ C[{4},4]=20).
-  *(For this (D), optimal tour cost is 80 via 1→2→4→3→1.)*
+|  k | (C[{k},k]) |
+| -: | ---------: |
+|  2 |   (d(1,2)) |
+|  3 |   (d(1,3)) |
+|  4 |   (d(1,4)) |
+
+**Illustration (if** (D=\begin{bmatrix}0&10&15&20\10&0&35&25\15&35&0&30\20&25&30&0\end{bmatrix})**):**
+(C[{2},2]=10), (C[{3},3]=15), (C[{4},4]=20); final optimal tour cost for this (D) is **80** (e.g., (1\to2\to4\to3\to1)).
 
 ---
 
+## Quick Reference (write-ready)
+
+* **MCM:** Base (m[i,i]=0); (m[i,j]=\min_k(m[i,k]+m[k+1,j]+d_{i-1}d_kd_j)); answer **158**.
+* **LCS:** Base 0; match → (+1) diag; else max(up,left); length **3**.
+* **OBST:** Base (e[i,i-1]=w[i,i-1]=0); (w[i,j]=w[i,j-1]+p_j); (e[i,j]=\min_r(e[i,r-1]+e[r+1,j]+w[i,j])); answer **1.7**.
+* **BnB Knapsack bound:** see boxed formula; level-0/1 node tuples shown.
+* **TSP (Held–Karp):** boxed base/recurrence/final; base entries table provided.

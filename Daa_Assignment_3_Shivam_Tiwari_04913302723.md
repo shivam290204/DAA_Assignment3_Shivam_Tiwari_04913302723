@@ -217,10 +217,3 @@ Assume start city is 1. Let (S\subseteq{2,3,4}), (j\in S).
 
 ---
 
-## Quick Reference (write-ready)
-
-* **MCM:** Base (m[i,i]=0); (m[i,j]=\min_k(m[i,k]+m[k+1,j]+d_{i-1}d_kd_j)); answer **158**.
-* **LCS:** Base 0; match → (+1) diag; else max(up,left); length **3**.
-* **OBST:** Base (e[i,i-1]=w[i,i-1]=0); (w[i,j]=w[i,j-1]+p_j); (e[i,j]=\min_r(e[i,r-1]+e[r+1,j]+w[i,j])); answer **1.7**.
-* **BnB Knapsack bound:** see boxed formula; level-0/1 node tuples shown.
-* **TSP (Held–Karp):** boxed base/recurrence/final; base entries table provided.

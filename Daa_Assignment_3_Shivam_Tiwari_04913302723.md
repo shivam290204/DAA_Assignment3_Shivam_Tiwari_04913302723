@@ -10,16 +10,6 @@ Enrollment Number - 04913302723
 
 ---
 
-## 📋 Instructions (as given)
-
-* Answer only what is asked in 20–40 words or short pseudocode/recurrence.
-* Provide **core DP/BB formulations**, not full code.
-* Clarity and correctness over length.
-
-> This README repeats each **Question** first and then provides a **Detailed Solution** with math and tables.
-
----
-
 ## 🧠 SECTION A – Short Theory [15 Marks]
 
 ### Q1. DP essentials
